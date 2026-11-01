@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.venv/
+installer_builder/packages/*.installer
+installer_builder/packages/*.zip
