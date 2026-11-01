@@ -166,6 +166,14 @@ class InstallerTests(unittest.TestCase):
         with self.assertRaises(InstallerError):
             InstallerPackage(package.path)
 
+    def test_changed_manifest_requires_package_reload(self):
+        package = self.build()
+        self.config["publisher"] = "Changed publisher"
+        self.build()
+        with self.assertRaisesRegex(InstallerError, "erneut laden"):
+            with package.extract():
+                pass
+
     def test_manifest_link_must_be_installed_file(self):
         self.write("link.txt", "./User/Documents/config.ini;")
         with self.assertRaises(InstallerError):

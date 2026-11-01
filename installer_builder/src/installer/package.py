@@ -119,7 +119,8 @@ class InstallerPackage:
                     raise InstallerError("manifest.json oder payload.zip fehlt.")
                 if archive.getinfo("manifest.json").file_size > MAX_JSON_BYTES:
                     raise InstallerError("Manifest ist zu groß.")
-                manifest = read_json(archive.read("manifest.json"))
+                self._manifest_bytes = archive.read("manifest.json")
+                manifest = read_json(self._manifest_bytes)
             if not isinstance(manifest, dict) or manifest.get("format_version") != 1:
                 raise InstallerError("Nicht unterstütztes Paketformat.")
             self.config = InstallerConfig.from_dict(manifest.get("config"))
@@ -151,6 +152,10 @@ class InstallerPackage:
                 payload = root / "payload.zip"
                 with ZipFile(self.path) as archive:
                     checked_members(archive)
+                    if archive.getinfo("manifest.json").file_size > MAX_JSON_BYTES:
+                        raise InstallerError("Manifest ist zu groß.")
+                    if archive.read("manifest.json") != self._manifest_bytes:
+                        raise InstallerError("Das Paket wurde geändert. Bitte erneut laden.")
                     with archive.open("payload.zip") as source, payload.open("wb") as destination:
                         shutil.copyfileobj(source, destination)
                 data = root / "data"
