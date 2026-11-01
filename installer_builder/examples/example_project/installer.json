@@ -1,0 +1,13 @@
+{
+  "name": "GameXY",
+  "version": "1.0",
+  "publisher": "Example",
+  "default_install_path": "C:/Games/GameXY",
+  "desktop_shortcut": true,
+  "required_parameters": [
+    {
+      "name": "PLAYER_NAME",
+      "description": "Spielername"
+    }
+  ]
+}
